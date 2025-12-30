@@ -68,6 +68,12 @@ export const useTodoApp = () => {
     setCategories([...categories, newCategory]);
   };
 
+  const updateCategory = (categoryId: string, updates: Partial<Category>) => {
+    setCategories(categories.map(cat =>
+      cat.id === categoryId ? { ...cat, ...updates } : cat
+    ));
+  };
+
   const deleteCategory = (categoryId: string) => {
     setCategories(categories.filter(cat => cat.id !== categoryId));
     setTasks(tasks.filter(task => task.categoryId !== categoryId));
@@ -81,6 +87,7 @@ export const useTodoApp = () => {
     deleteTask,
     moveTask,
     addCategory,
+    updateCategory,
     deleteCategory,
   };
 };

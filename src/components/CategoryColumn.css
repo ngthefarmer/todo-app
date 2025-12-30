@@ -18,6 +18,15 @@
   margin-bottom: 16px;
   border-top: 3px solid;
   padding-top: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
 }
 
 .category-header h2 {
@@ -34,6 +43,34 @@
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.category-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.category-action-btn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-action-btn:hover {
+  background: #f3f4f6;
+  transform: scale(1.05);
+}
+
+.category-action-btn.delete-btn:hover {
+  background: #fee2e2;
+  border-color: #fecaca;
 }
 
 .tasks-container {

@@ -10,6 +10,8 @@ interface CategoryColumnProps {
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
   onDeleteTask: (taskId: string) => void;
   onAddTask: (categoryId: string) => void;
+  onEditCategory: (categoryId: string) => void;
+  onDeleteCategory: (categoryId: string) => void;
 }
 
 export const CategoryColumn = ({
@@ -18,6 +20,8 @@ export const CategoryColumn = ({
   onUpdateTask,
   onDeleteTask,
   onAddTask,
+  onEditCategory,
+  onDeleteCategory,
 }: CategoryColumnProps) => {
   const { setNodeRef } = useDroppable({
     id: category.id,
@@ -28,8 +32,26 @@ export const CategoryColumn = ({
   return (
     <div className="category-column">
       <div className="category-header" style={{ borderTopColor: category.color }}>
-        <h2>{category.name}</h2>
-        <span className="task-count">{categoryTasks.length}</span>
+        <div className="category-title-section">
+          <h2>{category.name}</h2>
+          <span className="task-count">{categoryTasks.length}</span>
+        </div>
+        <div className="category-actions">
+          <button
+            className="category-action-btn edit-btn"
+            onClick={() => onEditCategory(category.id)}
+            title="Edit category"
+          >
+            ✏️
+          </button>
+          <button
+            className="category-action-btn delete-btn"
+            onClick={() => onDeleteCategory(category.id)}
+            title="Delete category"
+          >
+            🗑️
+          </button>
+        </div>
       </div>
 
       <div ref={setNodeRef} className="tasks-container">

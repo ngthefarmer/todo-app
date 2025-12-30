@@ -11,8 +11,9 @@ import {
 import { useTodoApp } from './hooks/useTodoApp';
 import { CategoryColumn } from './components/CategoryColumn';
 import { AddTaskModal } from './components/AddTaskModal';
+import { CategoryModal } from './components/CategoryModal';
 import { TaskCard } from './components/TaskCard';
-import { Task } from './types';
+import { Task, Category } from './types';
 import './App.css';
 
 function App() {
@@ -23,10 +24,15 @@ function App() {
     updateTask,
     deleteTask,
     moveTask,
+    addCategory,
+    updateCategory,
+    deleteCategory,
   } = useTodoApp();
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [modalCategoryId, setModalCategoryId] = useState<string | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -59,11 +65,49 @@ function App() {
     }
   };
 
+  const handleEditCategory = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (category) {
+      setEditingCategory(category);
+    }
+  };
+
+  const handleDeleteCategory = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    const categoryTasks = tasks.filter(t => t.categoryId === categoryId);
+
+    const message = categoryTasks.length > 0
+      ? `Are you sure you want to delete "${category?.name}"? This will also delete ${categoryTasks.length} task(s).`
+      : `Are you sure you want to delete "${category?.name}"?`;
+
+    if (window.confirm(message)) {
+      deleteCategory(categoryId);
+    }
+  };
+
+  const handleSaveCategory = (name: string, color: string) => {
+    if (editingCategory) {
+      updateCategory(editingCategory.id, { name, color });
+    } else {
+      addCategory(name, color);
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
-        <h1>✓ Todo App</h1>
-        <p>Organize your tasks with drag and drop</p>
+        <div className="header-content">
+          <div>
+            <h1>✓ Todo App</h1>
+            <p>Organize your tasks with drag and drop</p>
+          </div>
+          <button
+            className="add-category-btn"
+            onClick={() => setShowAddCategoryModal(true)}
+          >
+            + Add Category
+          </button>
+        </div>
       </header>
 
       <DndContext
@@ -80,6 +124,8 @@ function App() {
               onUpdateTask={updateTask}
               onDeleteTask={deleteTask}
               onAddTask={setModalCategoryId}
+              onEditCategory={handleEditCategory}
+              onDeleteCategory={handleDeleteCategory}
             />
           ))}
         </div>
@@ -100,6 +146,17 @@ function App() {
           categoryId={modalCategoryId}
           onAdd={addTask}
           onClose={() => setModalCategoryId(null)}
+        />
+      )}
+
+      {(editingCategory || showAddCategoryModal) && (
+        <CategoryModal
+          category={editingCategory || undefined}
+          onSave={handleSaveCategory}
+          onClose={() => {
+            setEditingCategory(null);
+            setShowAddCategoryModal(false);
+          }}
         />
       )}
     </div>
